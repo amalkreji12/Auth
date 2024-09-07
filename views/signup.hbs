@@ -1,0 +1,37 @@
+<section>
+    <div class="container d-flex justify-content-center vh-100 align-items-center">
+
+        <form class="form" href="/signup" method="post">
+            <p class="title">Register </p>
+            <p class="message">Signup now and get full access to our app. </p>
+            <div class="flex">
+                <label>
+                    <input required="" placeholder="" name="name" type="text" class="input">
+                    <span>Name</span>
+                </label>
+
+                {{!-- <label>
+                    <input required="" placeholder="" type="text" class="input">
+                    <span>Lastname</span>
+                </label> --}}
+            </div>
+
+            <label>
+                <input required="" placeholder="" name="email" type="email" class="input">
+                <span>Email</span>
+            </label>
+
+            <label>
+                <input required="" placeholder="" name="password" type="password" class="input">
+                <span>Password</span>
+            </label>
+            <label>
+                <input required="" placeholder="" name="confirm_password" type="password" class="input">
+                <span>Confirm password</span>
+            </label>
+            <button class="submit">Submit</button>
+            <p class="signin">Already have an acount ? <a href="/login">Login</a> </p>
+        </form>
+
+    </div>
+</section>
