@@ -13,7 +13,13 @@ router.get('/',((req,res)=>{
 }));
 
 router.get('/login',((req,res)=>{
-    res.render('login')
+    if(req.session.user){
+        res.redirect('home');
+    }else{
+        res.render('login',{'loginError':req.session.userloginError})
+        req.session.userloginError = false;
+    }
+    
 }));
 
 router.get('/signup',((req,res)=>{
@@ -42,10 +48,30 @@ router.get('/signup-confirm',(req,res)=>{
     if(req.session.user){
         res.render('signup-confirm')
     }else{
-        res.redirect('signup')
+        res.redirect('home')
     }
     console.log(req.session.user);
-})
+});
+
+router.post('/login',((req,res)=>{
+    userhelper.doLogin(req.body).then((response)=>{
+        //console.log(response);
+        if(response.status){
+            req.session.user = response.user;
+            req.session.user.loggedIn = true;
+            res.redirect('home')
+        }else{
+            req.session.userloginError = 'Invalid Email or Password';
+            res.redirect('login');
+        }
+        
+    })
+    
+}));
+
+router.get('/home',((req,res)=>{
+    res.render('user-home');
+}))
 
 
 
