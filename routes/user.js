@@ -2,76 +2,95 @@ var express = require('express');
 var router = express.Router();
 var userhelper = require('../controllers/user-helpers');
 
+const verifyLogin = (req, res, next) => {
+    if (req.session.user.loggedIn) {
+        next();
+    } else {
+        res.render('/')
+    }
+}
 
-router.get('/',((req,res)=>{
-    if(req.session.user){
+router.get('/', ((req, res) => {
+    if (req.session.user) {
         res.redirect('login');
-    }else{
+    } else {
         res.render('home')
     }
-    // res.render('home')
 }));
 
-router.get('/login',((req,res)=>{
-    if(req.session.user){
+router.get('/login', ((req, res) => {
+    if (req.session.user) {
         res.redirect('home');
-    }else{
-        res.render('login',{'loginError':req.session.userloginError})
+    } else {
+        res.render('login', { 'loginError': req.session.userloginError })
         req.session.userloginError = false;
     }
-    
+
 }));
 
-router.get('/signup',((req,res)=>{
-    if(req.session.user){
+router.get('/signup', ((req, res) => {
+    if (req.session.user) {
         res.render('signup-confirm')
-    }else{
+    } else {
         res.render('signup')
     }
-    
+
 }));
 
-router.post('/signup',((req,res)=>{
-    userhelper.doSignUp(req.body).then((response)=>{
+router.post('/signup', ((req, res) => {
+    userhelper.doSignUp(req.body).then((response) => {
         //console.log(response);  
         req.session.user = response;
         req.session.user.loggedIn = true;
         res.redirect('signup-confirm')
     })
-    .catch((err)=>{
-        console.log(err);
-        res.status(500).send('Signup failed');
-    })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).send('Signup failed');
+        })
 }));
 
-router.get('/signup-confirm',(req,res)=>{
-    if(req.session.user){
+router.get('/signup-confirm', (req, res) => {
+    if (req.session.user) {
         res.render('signup-confirm')
-    }else{
+    } else {
         res.redirect('home')
     }
     console.log(req.session.user);
 });
 
-router.post('/login',((req,res)=>{
-    userhelper.doLogin(req.body).then((response)=>{
+router.post('/login', ((req, res) => {
+    userhelper.doLogin(req.body).then((response) => {
         //console.log(response);
-        if(response.status){
+        if (response.status) {
             req.session.user = response.user;
             req.session.user.loggedIn = true;
             res.redirect('home')
-        }else{
+        } else {
             req.session.userloginError = 'Invalid Email or Password';
             res.redirect('login');
         }
-        
+
     })
-    
+
 }));
 
-router.get('/home',((req,res)=>{
-    res.render('user-home');
-}))
+router.get('/home', (req, res) => {
+    if (req.session.user) {
+        let user = req.session.user;
+        console.log(user);
+        res.render('user-home');
+    }else{
+        res.render('login')
+    }
+
+})
+
+router.get('/logout', (req, res) => {
+    // req.session.destroy();
+    req.session.user=null;
+    res.redirect('/login')
+})
 
 
 
