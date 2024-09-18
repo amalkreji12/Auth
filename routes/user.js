@@ -78,8 +78,9 @@ router.post('/login', ((req, res) => {
 router.get('/home', (req, res) => {
     if (req.session.user) {
         let user = req.session.user;
+        const value = 4;
         console.log(user);
-        res.render('user-home');
+        res.render('user-home',{user});
     }else{
         res.render('login')
     }
